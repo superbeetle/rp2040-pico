@@ -60,22 +60,22 @@ The Raspberry Pi Pico comes as a castellated module allows soldering direct to c
 
 ## GPIO引脚
 
-![](C:\Users\Administrator\Desktop\MCU\rp2040-pico\GPIO引脚.jpg)
+![](GPIO引脚.jpg)
 
 
 
 ## 芯片引脚
 
-![](C:\Users\Administrator\Desktop\MCU\rp2040-pico\芯片引脚.jpg)
+![](芯片引脚.jpg)
 
 
 
 ## 芯片架构
 
-![](C:\Users\Administrator\Desktop\MCU\rp2040-pico\芯片架构.png)
+![](芯片架构.png)
 
 
 
 ## 总线结构
 
-![](C:\Users\Administrator\Desktop\MCU\rp2040-pico\总线结构.png)
+![](总线结构.png)
