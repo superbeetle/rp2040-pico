@@ -4,9 +4,27 @@ import os, sdcard, machine
 
 
 def sdtest():
-    spi = machine.SPI(1)
-    spi.init()  # Ensure right baudrate
-    sd = sdcard.SDCard(spi, machine.Pin.board.X21)  # Compatible with PCB
+#     spi = machine.SPI(1)
+#     spi.init()  # Ensure right baudrate
+#     sd = sdcard.SDCard(spi, machine.Pin.board.X21)  # Compatible with PCB
+    # start 1MHz
+    cs = machine.Pin(15, machine.Pin.OUT)
+
+    spi = machine.SPI(
+        1,
+        baudrate=1000000,
+        polarity=0,
+        phase=0,
+        bits=8,
+        firstbit=machine.SPI.MSB,
+        sck=machine.Pin(10),
+        mosi=machine.Pin(11),
+        miso=machine.Pin(12),
+    )
+
+    #Init sdcard
+    sd = sdcard.SDCard(spi,cs)
+    
     vfs = os.VfsFat(sd)
     os.mount(vfs, "/fc")
     print("Filesystem check")
@@ -59,3 +77,7 @@ def sdtest():
         success = False
     print()
     print("Tests", "passed" if success else "failed")
+    
+
+if __name__ == "__main__":
+    sdtest()

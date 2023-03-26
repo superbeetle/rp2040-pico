@@ -10,17 +10,20 @@ sdcard format fat
 '''
 import uos, sdcard, machine
 
-cs = machine.Pin(9,machine.Pin.OUT)
 # start 1MHz
-spi = machine.SPI(1,
-                  baudrate=100000,
-                  polarity=0,
-                  phase=0,
-                  bits=8,
-                  firstbit=machine.SPI.MSB, 
-                  sck=machine.Pin(10),
-                  mosi=machine.Pin(11),
-                  miso=machine.Pin(8))
+cs = machine.Pin(15, machine.Pin.OUT)
+
+spi = machine.SPI(
+    1,
+    baudrate=1000000,
+    polarity=0,
+    phase=0,
+    bits=8,
+    firstbit=machine.SPI.MSB,
+    sck=machine.Pin(10),
+    mosi=machine.Pin(11),
+    miso=machine.Pin(12),
+)
 
 #Init sdcard
 sd = sdcard.SDCard(spi,cs)
