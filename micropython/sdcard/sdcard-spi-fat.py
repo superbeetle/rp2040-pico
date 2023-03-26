@@ -6,7 +6,7 @@ MOSI 	GP11	Pin15 SPI1-TX
 SCK		GP10	Pin14 
 MISO	GP12	Pin16 SPI1-RX
 
-sdcard format fat
+sdcard format fat32
 '''
 import uos, sdcard, machine
 
