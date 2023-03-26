@@ -1,10 +1,10 @@
 '''
 VCC 	VCC 	3V
 GND 	GND
-CS  	GP9 	Pin12
+CS  	GP15 	Pin20
 MOSI 	GP11	Pin15 SPI1-TX
-CLK		GP10	Pin14 SCK
-MISO	GP8		Pin11 SPI1-RX
+SCK		GP10	Pin14 
+MISO	GP12	Pin16 SPI1-RX
 
 sdcard format fat
 '''
