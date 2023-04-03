@@ -20,6 +20,16 @@ https://docs.micropython.org/en/latest/index.html
 
 https://datasheets.raspberrypi.com/
 
+micropython 环境
+
+https://www.raspberrypi.com/documentation/microcontrollers/micropython.html
+
+https://thonny.org/
+
+c c++ 环境
+
+https://www.raspberrypi.com/documentation/microcontrollers/c_sdk.html
+
 https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-c-sdk.pdf
 
 
