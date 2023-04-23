@@ -112,3 +112,15 @@ cmake -G "NMake Makefiles" ..
   输入NMake Makefiles
 
 然后使用**VS2017开发人员命令**（一定要使用这个打开，不然会编译错误）打开vscode，配置kit 选安装的gcc套件，build all将进行类似上面的编译
+
+
+
+# openocd编译
+
+win下需要安装mingw64
+
+libusb-1.0.26-binaries.7z
+
+libusb-1.0.26-binaries.7z\libusb-1.0.26-binaries\VS2015-x64\dll\libusb-1.0.dll，放到C:\Windows\System
+
+参考：Raspberry-Pi-PICO系列--第四篇 开发环境搭建-Windows系统 + Visual Studio Code开发.mhtml
