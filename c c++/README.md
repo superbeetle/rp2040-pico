@@ -115,12 +115,61 @@ cmake -G "NMake Makefiles" ..
 
 
 
-# openocd编译
+# 官方手册pico调试
 
+材料准备：
+
+```
 win下需要安装mingw64
 
 libusb-1.0.26-binaries.7z
 
 libusb-1.0.26-binaries.7z\libusb-1.0.26-binaries\VS2015-x64\dll\libusb-1.0.dll，放到C:\Windows\System
 
+zadig-2.8 清除重装使用interface2安装libusb-win32
+
 参考：Raspberry-Pi-PICO系列--第四篇 开发环境搭建-Windows系统 + Visual Studio Code开发.mhtml
+	 getting-started-with-pico.pdf（Chapter 7. Using Visual Studio Code）
+```
+
+注意配置完后，pico-examples目录建一个bat双击启动vscode，这样不用手工敲命令进入pico-examples目录
+
+```bash
+call "D:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsamd64_x86.bat"
+code
+```
+
+使用openocd命令行操作，开2个cmd，一个是openocd服务，另一个cmd进行调试
+
+```
+openocd.exe -s ../tcl -f interface/picoprobe.cfg -f target/rp2040.cfg
+
+arm-none-eabi-gdb blink.elf
+
+target remote localhost:3333
+
+load
+monitor reset init
+continue
+```
+
+
+
+# 第一个项目
+
+demo使用的是windows环境下
+
+查看官方手册35页，使用官方生成工具，pico-project-generator，命令行
+
+```
+cd pico-project-generator
+Linux
+./pico_project.py --gui
+Windows
+python ./pico_project.py --gui
+```
+
+钩上vscode，使用vscode开发
+
+- 生成骨架后，把.vscode下的c_cpp_properties.json、extensions.json删掉，复制上面配好的lanch.json、setting.json配置到项目中，同时清空build目录，重新用交叉编译工具打开vscode，这里我写了个命令行**vscode.bat**，双击打开即可，打开后会提示选择arm-none-eabi-gdb，选中状态栏Build后会自动构建项目到build
+- 点击debug，进入main断点开始调试，有时openocd会出现超时错误无法进行调试，你可以插拔下pico，重新debug试试
