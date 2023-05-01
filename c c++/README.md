@@ -31,6 +31,36 @@ code --install-extension ms-vscode.cpptools
 https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf
 https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-c-sdk.pdf
 
+Ubuntu操作系统下官方手册在安装openocd时失败，参考**《(91条消息) 轻松玩转树莓派Pico之四、Ubuntu下在线debug环境搭建_._configure --enable-picoprobe_杭州_燕十三的博客-CSDN博客》**安装成功后，后来删掉成功的安装，重新按官方git下载按官方手册成功安：（，未找到具体原因
+
+构建debug项目，参考手册22页：
+
+You can build a debug version of the "Hello World"" with CMAKE_BUILD_TYPE=Debug as shown below
+
+```shell
+$ cd ~/pico/pico-examples 
+
+$ rm -rf build 
+
+$ mkdir build 
+
+$ cd build 
+
+$ export PICO_SDK_PATH=../../pico-sdk 
+
+$ cmake -DCMAKE_BUILD_TYPE=Debug .. 
+
+$ cd hello_world/serial 
+
+$ make -j4
+```
+
+后续的调试参考上面提到的博客文章，有些细节官网未写清楚，使用openocd命令行操作跟windows一致可以往下看看
+
+另外，arm-none-eabi套件首次打开不显示，查看如下操作步骤![](C:\Users\Administrator\Desktop\MCU\rp2040-pico\c c++\vscode-cfg.jpg)
+
+编写自己的个人项目myblink，参考：Chapter 8. Creating your own Project，第31页。当然你也可以使用pico-project-generator来生成，但为了更好了解构建过程，建议查看第31页一步步教程
+
 
 
 # Windows 环境
