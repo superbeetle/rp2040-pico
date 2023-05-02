@@ -31,7 +31,7 @@ code --install-extension ms-vscode.cpptools
 https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf
 https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-c-sdk.pdf
 
-Ubuntu操作系统下官方手册在安装openocd时失败，参考**《(91条消息) 轻松玩转树莓派Pico之四、Ubuntu下在线debug环境搭建_._configure --enable-picoprobe_杭州_燕十三的博客-CSDN博客》**安装成功后，后来删掉成功的安装，重新按官方git下载按官方手册成功安：（，未找到具体原因
+Ubuntu操作系统下官方手册在安装openocd时失败，参考**《(91条消息) 轻松玩转树莓派Pico之四、Ubuntu下在线debug环境搭建_._configure --enable-picoprobe_杭州_燕十三的博客-CSDN博客》**安装成功后，后来删掉成功的安装，重新按官方git下载按官方手册成功安：(，未找到具体原因
 
 构建debug项目，参考手册22页：
 
@@ -55,9 +55,44 @@ $ cd hello_world/serial
 $ make -j4
 ```
 
-后续的调试参考上面提到的博客文章，有些细节官网未写清楚，使用openocd命令行操作跟windows一致可以往下看看
+后续的调试参考上面提到的博客文章，有些细节官网未写清楚，使用openocd命令行操作跟windows有点区别
 
-另外，arm-none-eabi套件首次打开不显示，查看如下操作步骤![](C:\Users\Administrator\Desktop\MCU\rp2040-pico\c c++\vscode-cfg.jpg)
+注意授权usb（*每次picoprobe连接usb后，都需要执行*）：
+
+opencd termial
+
+```shell
+$ sudo chmod -R 777 /dev/bus/usb/
+$ openocd -f interface/picoprobe.cfg -f target/rp2040.cfg
+```
+
+gdb-multiarch termial
+
+```shell
+$ cd ~/pico/pico-examples/build/hello_world/serial
+$ gdb-multiarch hello_serial.elf 
+Connect GDB to OpenOCD, (gdb) target remote localhost:3333
+(gdb) load
+Loading section .boot2, size 0x100 lma 0x10000000
+Loading section .text, size 0x22d0 lma 0x10000100
+Loading section .rodata, size 0x4a0 lma 0x100023d0
+Loading section .ARM.exidx, size 0x8 lma 0x10002870
+Loading section .data, size 0xb94 lma 0x10002878
+Start address 0x10000104, load size 13324
+Transfer rate: 31 KB/sec, 2664 bytes/write.
+and then start it running.
+(gdb) monitor reset init
+(gdb) continue
+(gdb) b main
+(gdb) continue
+(gdb) quit
+```
+
+b main 相当于在main处打断点
+
+另外，arm-none-eabi套件首次打开不显示，查看如下操作步骤![](vscode-cfg.jpg)
+
+![image-20230502112833925](vscode-cfg2.png)
 
 编写自己的个人项目myblink，参考：Chapter 8. Creating your own Project，第31页。当然你也可以使用pico-project-generator来生成，但为了更好了解构建过程，建议查看第31页一步步教程
 
