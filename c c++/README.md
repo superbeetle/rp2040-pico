@@ -33,6 +33,12 @@ https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-c-sdk.pdf
 
 Ubuntu操作系统下官方手册在安装openocd时失败，参考**《(91条消息) 轻松玩转树莓派Pico之四、Ubuntu下在线debug环境搭建_._configure --enable-picoprobe_杭州_燕十三的博客-CSDN博客》**安装成功后，后来删掉成功的安装，重新按官方git下载按官方手册成功安：(，未找到具体原因
 
+构建openocd时，报./configure: line 4941: `PKG_PROG_PKG_CONFIG(0.23)'错误，执行
+
+```shell
+$ apt-get install pkg-config
+```
+
 构建debug项目，参考手册22页：
 
 You can build a debug version of the "Hello World"" with CMAKE_BUILD_TYPE=Debug as shown below
