@@ -4,8 +4,8 @@
 #define PIN_TX 12
 #define PIN_RX 13
 #define BAUD 115200
-#define SSID "yoursid"
-#define PASSWORD "yourpassword"
+#define SSID "yourssid"
+#define PASSWORD "yourpasswd"
 
 void setup()
 {
@@ -17,7 +17,8 @@ void loop()
 {
   // at指令接口
   Serial.println("send at to uart...");
-  String myString = SendATCmdResp("AT+RESTORE\r\n");
+  SendATCmd("+++");
+  String myString = SendATCmdResp("AT+RESTORE\r\n", "OK\r\n", 10000);
   Serial.println(myString);
   myString = SendATCmdResp("AT\r\n");
   Serial.println(myString);
@@ -27,9 +28,11 @@ void loop()
   sprintf(atCmd, "AT+CWJAP=\"%s\",\"%s\"\r\n", SSID, PASSWORD);
   myString = SendATCmdResp(atCmd);
   Serial.println(myString);
-  delay(10);
+  delay(3000);
   // 应用接口
-  Serial.println("serial is ready?");
+  Serial.println("Start API test...");
+  UartRestore();
+  UartReset();
   boolean isconn = WifiIsConnected();
   Serial.println(isconn ? "connected" : "not connect");
   Serial.println("connect wifi...");
@@ -44,4 +47,5 @@ void loop()
     bool discon = DisconnectWifi();
     Serial.println(discon ? "disconnect" : "error");
   }
+  delay(5000);
 }

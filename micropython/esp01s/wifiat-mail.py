@@ -5,8 +5,8 @@ import json
 import time
 
 # esp-01s实际tx,rx反接
-# uart=UART(0,115200,tx=Pin(12),rx=Pin(13))
-uart=UART(0,115200,tx=Pin(16),rx=Pin(17))
+uart=UART(0,115200,tx=Pin(12),rx=Pin(13))
+#uart=UART(0,115200,tx=Pin(16),rx=Pin(17))
 AT=at(uart)
 
 # 重置模块，擦除之前的配置

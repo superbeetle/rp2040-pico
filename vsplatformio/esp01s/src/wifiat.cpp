@@ -57,11 +57,11 @@ void SendATCmd(const char *atCmd)
     size_t s = Serial1.print(atCmd);
 }
 
-String ReceiveATCmd(const char *successEndStr, int delaytime)
+String ReceiveATCmd(const char *successEndStr, int timeout)
 {
     bool timeoutResp = true; // 是否超时响应
     String respStr = "";
-    long deadline = millis() + delaytime;
+    long deadline = millis() + timeout;
     while (millis() < deadline)
     {
         if (Serial1.available() > 0)
@@ -77,19 +77,19 @@ String ReceiveATCmd(const char *successEndStr, int delaytime)
     }
     if (timeoutResp)
     {
-        Serial.println("超时响应!!!");
+        Serial.printf("Response timeout. %i(ms)\r\n", timeout);
     }
-    Serial.printf("=>> %s", respStr.c_str());
+    Serial.printf("=>> %s\r\n", respStr.c_str());
     return respStr;
 }
 
-String SendATCmdResp(const char *atCmd, const char *successEndStr, int delaytime)
+String SendATCmdResp(const char *atCmd, const char *successEndStr, int timeout)
 {
     // 发送
     SendATCmd(atCmd);
-    delay(delaytime);
+    delay(timeout);
     // 接收
-    String respStr = ReceiveATCmd(successEndStr, delaytime);
+    String respStr = ReceiveATCmd(successEndStr, timeout);
     return respStr;
 }
 
@@ -100,6 +100,19 @@ void UartWaitForReady()
     String uartStr = "uart is ready";
     Serial.println(uartStr.c_str());
     Serial.println(respStr);
+}
+
+void UartReset()
+{
+
+    SendATCmd("+++");
+    SendATCmdResp("AT+RST\r\n", "OK\r\n", 10000);
+}
+
+void UartRestore()
+{
+    SendATCmd("+++");
+    SendATCmdResp("AT+RESTORE\r\n", "OK\r\n", 10000);
 }
 
 bool WifiIsConnected()
@@ -121,7 +134,7 @@ bool ConnectWifi(const char *ssid, const char *password)
         // 准备指令
         char atCmd[100];
         sprintf(atCmd, "AT+CWJAP=\"%s\",\"%s\"\r\n", ssid, password);
-        respStr = SendATCmdResp(atCmd, "CONNECTED\r\n");
+        respStr = SendATCmdResp(atCmd, "CONNECTED\r\n", 10000);
         if (respStr.indexOf("CONNECTED\r\n") > -1)
         {
             return true;

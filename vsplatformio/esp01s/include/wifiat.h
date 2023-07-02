@@ -3,10 +3,10 @@
 #include "SerialUART.h"
 
 /**
- * @brief 20秒超时
+ * @brief 默认5秒超时
  *
  */
-#define TIME_OUT_MS 20000
+#define TIME_OUT_MS 5000
 
 /**
  * @brief 初始化wifi
@@ -22,7 +22,7 @@ void UartBegin(pin_size_t rx, pin_size_t tx, unsigned long band);
  *
  * @param atCmd at指令
  */
-void SendATCmd(char *atCmd);
+void SendATCmd(const char *atCmd);
 
 /**
  * @brief 读取串口
@@ -41,13 +41,33 @@ String ReceiveATCmd(const char *successEndStr = "OK\r\n", int timeout = TIME_OUT
 String SendATCmdResp(const char *atCmd, const char *successEndStr = "OK\r\n", int timeout = TIME_OUT_MS);
 
 /*!
-@brief 以下接口是二次包装接口
+@brief ============================================================================================================
  */
 
-/*判断串口是否准备好等*/
+/**
+ * @brief 判断串口是否准备好
+ *
+ */
 void UartWaitForReady();
 
-/*是否连上网络*/
+/**
+ * @brief 重置串口
+ *
+ */
+void UartReset();
+
+/**
+ * @brief 恢复出厂设置
+ *
+ */
+void UartRestore();
+
+/**
+ * @brief 是否连上网络
+ *
+ * @return true
+ * @return false
+ */
 bool WifiIsConnected();
 
 /**
