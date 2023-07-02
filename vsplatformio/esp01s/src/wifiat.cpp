@@ -4,6 +4,10 @@ void UartBegin(pin_size_t rx, pin_size_t tx, unsigned long band)
 {
     Serial1.setRX(rx);
     Serial1.setTX(tx);
+    // The size of the receive FIFO may also be adjusted from the default 32 bytes by using the
+    // 接收串口队列数据，可以设置大点接收多点
+    Serial1.setFIFOSize(256);
+    Serial1.setPollingMode(true);
     Serial1.begin(band);
     delay(500);
 }
@@ -51,6 +55,23 @@ void UartBegin(pin_size_t rx, pin_size_t tx, unsigned long band)
 //     return res;
 // }
 
+String _readStringFromUart()
+{
+    String res;
+    int value;
+    while (true)
+    {
+        value = Serial1.read();
+        if (value < 0 || value == '\0')
+        {
+            // Serial.print("e");
+            break;
+        }
+        res += static_cast<char>(value);
+    }
+    return res;
+}
+
 void SendATCmd(const char *atCmd)
 {
     Serial.printf("<<= %s", atCmd);
@@ -66,7 +87,9 @@ String ReceiveATCmd(const char *successEndStr, int timeout)
     {
         if (Serial1.available() > 0)
         {
-            respStr += Serial1.readStringUntil('\0');
+            respStr += Serial1.readStringUntil('\0'); // for test
+            // respStr += Serial1.readString();// for test
+            // respStr += _readStringFromUart();
         }
         // 判断结束标记
         if (respStr.indexOf(successEndStr) > -1)
@@ -87,7 +110,7 @@ String SendATCmdResp(const char *atCmd, const char *successEndStr, int timeout)
 {
     // 发送
     SendATCmd(atCmd);
-    delay(timeout);
+    delay(10);
     // 接收
     String respStr = ReceiveATCmd(successEndStr, timeout);
     return respStr;
@@ -117,7 +140,7 @@ void UartRestore()
 
 bool WifiIsConnected()
 {
-    String respStr = SendATCmdResp("AT+CWJAP?\r\n", "CWJAP:");
+    String respStr = SendATCmdResp("AT+CWJAP?\r\n", "CWJAP:", 10000);
     if (respStr.indexOf("CWJAP:") > -1)
     {
         return true;
@@ -132,9 +155,9 @@ bool ConnectWifi(const char *ssid, const char *password)
     if (respStr.indexOf("OK\r\n") > -1)
     {
         // 准备指令
-        char atCmd[100];
+        char atCmd[100] = {0};
         sprintf(atCmd, "AT+CWJAP=\"%s\",\"%s\"\r\n", ssid, password);
-        respStr = SendATCmdResp(atCmd, "CONNECTED\r\n", 10000);
+        respStr = SendATCmdResp(atCmd, "OK\r\n", 10000);
         if (respStr.indexOf("CONNECTED\r\n") > -1)
         {
             return true;
@@ -151,4 +174,14 @@ bool DisconnectWifi()
         return true;
     }
     return false;
+}
+
+String HttpRequest(const char *method, const char *url, const char *params, const char *headers, int timeout)
+{
+    // 连接站点
+    // AT+CIPSTART="TCP","api.m.taobao.com",80
+    char atCmd[100] = {0};
+    sprintf(atCmd, "AT+CIPSTART=\"TCP\",\"%s\",%d\r\n", "api.m.taobao.com", 80);
+    String respStr = SendATCmdResp(atCmd, "CONNECT\r\n", 20000);
+    return respStr;
 }

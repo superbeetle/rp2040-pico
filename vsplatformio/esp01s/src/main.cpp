@@ -4,8 +4,8 @@
 #define PIN_TX 12
 #define PIN_RX 13
 #define BAUD 115200
-#define SSID "yourssid"
-#define PASSWORD "yourpasswd"
+#define SSID "360WiFi"
+#define PASSWORD "fP7AyAzE8c"
 
 void setup()
 {
@@ -24,7 +24,7 @@ void loop()
   Serial.println(myString);
   myString = SendATCmdResp("AT+CWMODE=1\r\n");
   Serial.println(myString);
-  char atCmd[100];
+  char atCmd[100] = {0};
   sprintf(atCmd, "AT+CWJAP=\"%s\",\"%s\"\r\n", SSID, PASSWORD);
   myString = SendATCmdResp(atCmd);
   Serial.println(myString);
@@ -41,6 +41,15 @@ void loop()
   Serial.println("check connected?");
   isconn = WifiIsConnected();
   Serial.println(isconn ? "connected" : "error");
+
+  // 进行http请求
+  if (isconn)
+  {
+    String responBody = HttpRequest("GET", "http://taobao.com", "", "");
+    Serial.println(responBody);
+  }
+
+  // 断开wifi
   if (isconn)
   {
     Serial.println("disconnect wifi ...");
