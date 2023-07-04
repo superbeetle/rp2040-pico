@@ -1,6 +1,9 @@
 #include <Arduino.h>
 #include "wifiat.h"
 
+// #define _DEBUG_AT_COMMAND
+#define _DEBUG_WIFI_API
+
 #define PIN_TX 12
 #define PIN_RX 13
 #define BAUD 115200
@@ -15,10 +18,12 @@ void setup()
 
 void loop()
 {
-  // at指令接口
+// at指令接口
+#ifdef _DEBUG_AT_COMMAND
   Serial.println("send at to uart...");
   SendATCmd("+++");
-  String myString = SendATCmdResp("AT+RESTORE\r\n", "OK\r\n", 10000);
+  String myString = "";
+  myString = SendATCmdResp("AT+RESTORE\r\n", "OK\r\n", 10000);
   Serial.println(myString);
   myString = SendATCmdResp("AT\r\n");
   Serial.println(myString);
@@ -29,7 +34,9 @@ void loop()
   myString = SendATCmdResp(atCmd);
   Serial.println(myString);
   delay(3000);
-  // 应用接口
+#endif
+// 应用接口
+#ifdef _DEBUG_WIFI_API
   Serial.println("Start API test...");
   UartRestore();
   UartReset();
@@ -56,5 +63,6 @@ void loop()
     bool discon = DisconnectWifi();
     Serial.println(discon ? "disconnect" : "error");
   }
+#endif
   delay(5000);
 }

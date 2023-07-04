@@ -7,7 +7,7 @@ void UartBegin(pin_size_t rx, pin_size_t tx, unsigned long band)
     // The size of the receive FIFO may also be adjusted from the default 32 bytes by using the
     // 接收串口队列数据，可以设置大点接收多点
     Serial1.setFIFOSize(256);
-    Serial1.setPollingMode(true);
+    // Serial1.setPollingMode(true);
     Serial1.begin(band);
     delay(500);
 }
@@ -76,6 +76,7 @@ void SendATCmd(const char *atCmd)
 {
     Serial.printf("<<= %s", atCmd);
     size_t s = Serial1.print(atCmd);
+    delay(10);
 }
 
 String ReceiveATCmd(const char *successEndStr, int timeout)
@@ -87,7 +88,7 @@ String ReceiveATCmd(const char *successEndStr, int timeout)
     {
         if (Serial1.available() > 0)
         {
-            respStr += Serial1.readStringUntil('\0'); // for test
+            respStr += Serial1.readStringUntil('\0');
             // respStr += Serial1.readString();// for test
             // respStr += _readStringFromUart();
         }
@@ -110,7 +111,6 @@ String SendATCmdResp(const char *atCmd, const char *successEndStr, int timeout)
 {
     // 发送
     SendATCmd(atCmd);
-    delay(10);
     // 接收
     String respStr = ReceiveATCmd(successEndStr, timeout);
     return respStr;
@@ -127,7 +127,6 @@ void UartWaitForReady()
 
 void UartReset()
 {
-
     SendATCmd("+++");
     SendATCmdResp("AT+RST\r\n", "OK\r\n", 10000);
 }
@@ -135,7 +134,7 @@ void UartReset()
 void UartRestore()
 {
     SendATCmd("+++");
-    SendATCmdResp("AT+RESTORE\r\n", "OK\r\n", 10000);
+    SendATCmdResp("AT+RESTORE\r\n", "ready\r\n", 10000);
 }
 
 bool WifiIsConnected()
@@ -179,9 +178,22 @@ bool DisconnectWifi()
 String HttpRequest(const char *method, const char *url, const char *params, const char *headers, int timeout)
 {
     // 连接站点
-    // AT+CIPSTART="TCP","api.m.taobao.com",80
     char atCmd[100] = {0};
     sprintf(atCmd, "AT+CIPSTART=\"TCP\",\"%s\",%d\r\n", "api.m.taobao.com", 80);
     String respStr = SendATCmdResp(atCmd, "CONNECT\r\n", 20000);
+    if (respStr.indexOf("CONNECT\r\n") > -1)
+    {
+        // 准备指令
+        char httpReqStr[500] = {0};
+        sprintf(httpReqStr, "GET /rest/api3.do?api=mtop.common.getTimestamp HTTP/1.1\r\nHost:api.m.taobao.com\r\nContent-Type:application/json\r\nConnection:Keep-Alive\r\nUser-Agent:Mozila/4.0(compatible;MSIE5.01;Window NT5.0)\r\n\r\n");
+        char sendCmd[100] = {0};
+        sprintf(sendCmd, "AT+CIPSEND=%d\r\n", strlen(httpReqStr));
+        respStr = SendATCmdResp(sendCmd);
+        // 发送指令
+        respStr = SendATCmdResp(httpReqStr, "SEND OK\r\n", 20000);
+        Serial.println(respStr);
+        respStr = SendATCmdResp("AT+CIPCLOSE\r\n");
+        Serial.println(respStr);
+    }
     return respStr;
 }
