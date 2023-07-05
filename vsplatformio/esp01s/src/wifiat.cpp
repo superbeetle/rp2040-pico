@@ -99,6 +99,12 @@ String ReceiveATCmd(const char *successEndStr, int timeout)
             break;
         }
     }
+    // 读取完毕清空串口数据
+    Serial1.flush();
+    // while (Serial1.read() > -1)
+    // {
+    // }
+
     if (timeoutResp)
     {
         Serial.printf("Response timeout. %i(ms)\r\n", timeout);
@@ -128,7 +134,7 @@ void UartWaitForReady()
 void UartReset()
 {
     SendATCmd("+++");
-    SendATCmdResp("AT+RST\r\n", "OK\r\n", 10000);
+    SendATCmdResp("AT+RST\r\n", "ready\r\n", 10000);
 }
 
 void UartRestore()
@@ -139,7 +145,7 @@ void UartRestore()
 
 bool WifiIsConnected()
 {
-    String respStr = SendATCmdResp("AT+CWJAP?\r\n", "CWJAP:", 10000);
+    String respStr = SendATCmdResp("AT+CWJAP?\r\n");
     if (respStr.indexOf("CWJAP:") > -1)
     {
         return true;
@@ -183,9 +189,21 @@ String HttpRequest(const char *method, const char *url, const char *params, cons
     String respStr = SendATCmdResp(atCmd, "CONNECT\r\n", 20000);
     if (respStr.indexOf("CONNECT\r\n") > -1)
     {
+        // 分解url
+        String tempStr = ""; // 临时字符串
+        String urlStr(url);
+        String httpProtocol = urlStr.substring(0, 7);
+        tempStr = urlStr.substring(7);
+        String host = tempStr.substring(0, tempStr.indexOf("/"));
+        String uri = urlStr.substring(httpProtocol.length() + host.length(), urlStr.length());
+        Serial.println(httpProtocol);
+        Serial.println(host);
+        Serial.println(uri);
+        Serial.println("------------Split url finished------------\r\n");
         // 准备指令
         char httpReqStr[500] = {0};
-        sprintf(httpReqStr, "GET /rest/api3.do?api=mtop.common.getTimestamp HTTP/1.1\r\nHost:api.m.taobao.com\r\nContent-Type:application/json\r\nConnection:Keep-Alive\r\nUser-Agent:Mozila/4.0(compatible;MSIE5.01;Window NT5.0)\r\n\r\n");
+        // sprintf(httpReqStr, "GET %s HTTP/1.1\r\nHost:%s\r\nContent-Type:application/json\r\nConnection:Keep-Alive\r\nUser-Agent:Mozila/4.0(compatible;MSIE5.01;Window NT5.0)\r\n\r\n", uri.c_str(), host.c_str());
+        sprintf(httpReqStr, "GET %s HTTP/1.1\r\nHost:%s\r\n\r\n", url, host.c_str());
         char sendCmd[100] = {0};
         sprintf(sendCmd, "AT+CIPSEND=%d\r\n", strlen(httpReqStr));
         respStr = SendATCmdResp(sendCmd);

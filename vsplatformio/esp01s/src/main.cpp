@@ -52,7 +52,8 @@ void loop()
   // 进行http请求
   if (isconn)
   {
-    String responBody = HttpRequest("GET", "http://taobao.com", "", "");
+    String responBody = HttpRequest("GET", "http://api.m.taobao.com/rest/api3.do?api=mtop.common.getTimestamp", NULL, NULL);
+    // String responBody = HttpRequest("GET", "http://quan.suning.com/getSysTime.do", NULL, NULL);
     Serial.println(responBody);
   }
 
