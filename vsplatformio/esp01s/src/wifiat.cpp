@@ -89,7 +89,6 @@ String ReceiveATCmd(const char *successEndStr, int timeout)
         if (Serial1.available() > 0)
         {
             respStr += Serial1.readStringUntil('\0');
-            // respStr += Serial1.readString();// for test
             // respStr += _readStringFromUart();
         }
         // 判断结束标记
@@ -98,13 +97,13 @@ String ReceiveATCmd(const char *successEndStr, int timeout)
             timeoutResp = false;
             break;
         }
+        delay(10);
     }
     // 读取完毕清空串口数据
-    Serial1.flush();
-    // while (Serial1.read() > -1)
-    // {
-    // }
-
+    // Serial1.flush();
+    while (Serial1.read() > -1)
+    {
+    }
     if (timeoutResp)
     {
         Serial.printf("Response timeout. %i(ms)\r\n", timeout);
@@ -195,23 +194,41 @@ String HttpRequest(const char *method, const char *url, const char *params, cons
         String httpProtocol = urlStr.substring(0, 7);
         tempStr = urlStr.substring(7);
         String host = tempStr.substring(0, tempStr.indexOf("/"));
-        String uri = urlStr.substring(httpProtocol.length() + host.length(), urlStr.length());
+        // String uri = urlStr.substring(httpProtocol.length() + host.length(), urlStr.length());
         Serial.println(httpProtocol);
         Serial.println(host);
-        Serial.println(uri);
+        // Serial.println(uri);
         Serial.println("------------Split url finished------------\r\n");
         // 准备指令
         char httpReqStr[500] = {0};
-        // sprintf(httpReqStr, "GET %s HTTP/1.1\r\nHost:%s\r\nContent-Type:application/json\r\nConnection:Keep-Alive\r\nUser-Agent:Mozila/4.0(compatible;MSIE5.01;Window NT5.0)\r\n\r\n", uri.c_str(), host.c_str());
-        sprintf(httpReqStr, "GET %s HTTP/1.1\r\nHost:%s\r\n\r\n", url, host.c_str());
+        sprintf(httpReqStr, "GET %s HTTP/1.1\r\nHost:%s\r\nContent-Type:application/json\r\nConnection:Keep-Alive\r\nUser-Agent:Mozila/4.0(compatible;MSIE5.01;Window NT5.0)\r\n\r\n", url, host.c_str());
+        // sprintf(httpReqStr, "GET %s HTTP/1.1\r\nHost:%s\r\n\r\n", url, host.c_str());
         char sendCmd[100] = {0};
         sprintf(sendCmd, "AT+CIPSEND=%d\r\n", strlen(httpReqStr));
         respStr = SendATCmdResp(sendCmd);
         // 发送指令
         respStr = SendATCmdResp(httpReqStr, "SEND OK\r\n", 20000);
-        Serial.println(respStr);
+        // Serial.println(respStr);
         respStr = SendATCmdResp("AT+CIPCLOSE\r\n");
         Serial.println(respStr);
     }
     return respStr;
+}
+
+HttpResponse::HttpResponse(String body)
+{
+}
+
+HttpResponse::~HttpResponse()
+{
+}
+
+int HttpResponse::getStatus()
+{
+    return this->status;
+}
+
+String HttpResponse::getBody()
+{
+    return this->body;
 }

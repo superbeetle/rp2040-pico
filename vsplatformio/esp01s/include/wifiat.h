@@ -1,3 +1,6 @@
+#ifndef _WIFIAT_H
+#define _WIFIAT_H
+
 #include <Arduino.h>
 #include <time.h>
 #include "SerialUART.h"
@@ -99,3 +102,18 @@ bool DisconnectWifi();
  * @return String
  */
 String HttpRequest(const char *method, const char *url, const char *params, const char *headers, int timeout = 20000);
+
+class HttpResponse
+{
+private:
+    int status;
+    String body;
+
+public:
+    int getStatus();
+    String getBody();
+    HttpResponse(String body);
+    ~HttpResponse();
+};
+
+#endif
