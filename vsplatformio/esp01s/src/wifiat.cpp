@@ -172,7 +172,7 @@ bool ConnectWifi(const char *ssid, const char *password)
 
 bool DisconnectWifi()
 {
-    String respStr = SendATCmdResp("AT+CWQAP\r\n", "OK\r\n");
+    String respStr = SendATCmdResp("AT+CWQAP\r\n", "OK\r\n", 10000);
     if (respStr.indexOf("OK\r\n") > -1)
     {
         return true;

@@ -31,8 +31,8 @@ HttpResponse HttpRequest(const char *method, const char *url, const char *params
         respStr = SendATCmdResp(httpReqStr, "CLOSED\r\n", 20000);
         // 解析response
         httpResponse.parseResponse(respStr);
-        respStr = SendATCmdResp("AT+CIPCLOSE\r\n");
-        Serial.println(respStr);
+        // respStr = SendATCmdResp("AT+CIPCLOSE\r\n", "OK\r\n", 10000);
+        // Serial.println(respStr);
     }
     return httpResponse;
 }
@@ -49,7 +49,7 @@ HttpResponse::~HttpResponse()
 void HttpResponse::parseResponse(String httpResponse)
 {
     std::vector<String> result = StringSplit(httpResponse, String("\r\n"));
-    Serial.printf("分割http协议，共%d行", result.size());
+    Serial.printf("分割http协议，共%d行\r\n", result.size());
     // for debug only
     for (int i = 0; i < result.size(); i++)
     {
@@ -67,7 +67,6 @@ void HttpResponse::parseResponse(String httpResponse)
         responseBody = responseBody.substring(responseBody.indexOf("{"), responseBody.lastIndexOf("}") + 1);
         this->body = responseBody;
     }
-
     Serial.printf("HttpResponse, status:%d, responseBody: %s\n", this->status, this->body.c_str());
 }
 
