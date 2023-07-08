@@ -44,19 +44,20 @@ void loop()
   Serial.println("connect wifi...");
   bool isconned = ConnectWifi(SSID, PASSWORD);
   Serial.println(isconned ? "connected" : "error");
-  Serial.println("check connected?");
-  isconn = WifiIsConnected();
-  Serial.println(isconn ? "connected" : "error");
-
-  // 进行http请求
-  if (isconn)
+  if (isconned)
   {
-    HttpResponse httpResponse = HttpRequest("GET", "http://api.m.taobao.com/rest/api3.do?api=mtop.common.getTimestamp", NULL, NULL);
-    httpResponse = HttpRequest("GET", "http://quan.suning.com/getSysTime.do", NULL, NULL);
+    Serial.println("check connected?");
+    isconn = WifiIsConnected();
+    Serial.println(isconn ? "connected" : "error");
+    // 进行http请求
+    if (isconn)
+    {
+      HttpResponse httpResponse = HttpRequest("GET", "http://api.m.taobao.com/rest/api3.do?api=mtop.common.getTimestamp", NULL, NULL);
+      httpResponse = HttpRequest("GET", "http://quan.suning.com/getSysTime.do", NULL, NULL);
 
-    Serial.println(httpResponse.getBody());
+      Serial.println(httpResponse.getBody());
+    }
   }
-
   // 断开wifi
   if (isconn)
   {

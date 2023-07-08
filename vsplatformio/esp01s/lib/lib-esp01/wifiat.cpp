@@ -12,49 +12,6 @@ void UartBegin(pin_size_t rx, pin_size_t tx, unsigned long band)
     delay(500);
 }
 
-// String receiveResp(const char *endStr, int delaytime = 10)
-// {
-//     String res;
-//     int value;
-//     int match = 0;
-//     long timeout = 10000; // 10秒超时
-//     long deadline = millis() + timeout;
-//     while (millis() < deadline)
-//     {
-//         while (Serial1.available())
-//         {
-//             value = Serial1.read();
-//             // if (value < 0 || value == '\0')
-//             // {
-//             //     break;
-//             // }
-//             res += static_cast<char>(value);
-//             // 匹配字符串（匹配中）
-//             // int len = strlen(endStr);
-//             // if (match < len)
-//             // {
-//             //     // 匹配
-//             //     if (value == endStr[match])
-//             //     {
-//             //         match++;
-//             //     }
-//             //     else
-//             //     {
-//             //         // 重新匹配
-//             //         match = 0;
-//             //     }
-//             //     if (match == len - 1)
-//             //     {
-//             //         // 完全匹配
-//             //         return res;
-//             //     }
-//             // }
-//             delay(30);
-//         }
-//     }
-//     return res;
-// }
-
 String _readStringFromUart()
 {
     String res;
