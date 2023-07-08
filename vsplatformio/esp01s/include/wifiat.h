@@ -1,8 +1,7 @@
 #ifndef _WIFIAT_H
 #define _WIFIAT_H
 
-#include <Arduino.h>
-#include <time.h>
+#include "utils.h"
 #include "SerialUART.h"
 
 /**
@@ -10,6 +9,7 @@
  *
  */
 #define TIME_OUT_MS 5000
+#define HTTP_OK 200
 
 /**
  * @brief 初始化wifi
@@ -90,30 +90,5 @@ bool ConnectWifi(const char *ssid, const char *password);
  * @return false
  */
 bool DisconnectWifi();
-
-/**
- * @brief http请求
- *
- * @param method
- * @param url
- * @param params
- * @param headers
- * @param timeout
- * @return String
- */
-String HttpRequest(const char *method, const char *url, const char *params, const char *headers, int timeout = 20000);
-
-class HttpResponse
-{
-private:
-    int status;
-    String body;
-
-public:
-    int getStatus();
-    String getBody();
-    HttpResponse(String body);
-    ~HttpResponse();
-};
 
 #endif

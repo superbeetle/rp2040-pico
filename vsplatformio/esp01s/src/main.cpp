@@ -1,5 +1,4 @@
-#include <Arduino.h>
-#include "wifiat.h"
+#include "wifihttp.h"
 
 // #define _DEBUG_AT_COMMAND
 #define _DEBUG_WIFI_API
@@ -52,9 +51,10 @@ void loop()
   // 进行http请求
   if (isconn)
   {
-    // String responBody = HttpRequest("GET", "http://api.m.taobao.com/rest/api3.do?api=mtop.common.getTimestamp", NULL, NULL);
-    String responBody = HttpRequest("GET", "http://quan.suning.com/getSysTime.do", NULL, NULL);
-    Serial.println(responBody);
+    HttpResponse httpResponse = HttpRequest("GET", "http://api.m.taobao.com/rest/api3.do?api=mtop.common.getTimestamp", NULL, NULL);
+    httpResponse = HttpRequest("GET", "http://quan.suning.com/getSysTime.do", NULL, NULL);
+
+    Serial.println(httpResponse.getBody());
   }
 
   // 断开wifi
