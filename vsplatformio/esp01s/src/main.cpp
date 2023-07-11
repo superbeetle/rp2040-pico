@@ -2,21 +2,27 @@
 
 // #define _DEBUG_AT_COMMAND
 #define _DEBUG_WIFI_API
-
+// esp8266 接线
 #define PIN_TX 12
 #define PIN_RX 13
+
 #define BAUD 115200
 #define SSID "360WiFi"
 #define PASSWORD "fP7AyAzE8c"
 
+#include "log4c.h"
+
+// 定义输出日志
+Log4C *Log = nullptr;
 void setup()
 {
   UartBegin(PIN_RX, PIN_TX, BAUD);
-  Serial.begin(BAUD);
+  Log = new Log4C();
 }
 
 void loop()
 {
+
 // at指令接口
 #ifdef _DEBUG_AT_COMMAND
   Serial.println("send at to uart...");
@@ -53,9 +59,11 @@ void loop()
     if (isconn)
     {
       HttpResponse httpResponse = HttpRequest("GET", "http://api.m.taobao.com/rest/api3.do?api=mtop.common.getTimestamp", NULL, NULL);
-      httpResponse = HttpRequest("GET", "http://quan.suning.com/getSysTime.do", NULL, NULL);
+      Log->debug(httpResponse.getBody());
 
-      Serial.println(httpResponse.getBody());
+      httpResponse = HttpRequest("GET", "http://quan.suning.com/getSysTime.do", NULL, NULL);
+      // Serial2.println(httpResponse.getBody());
+      Log->debug(httpResponse.getBody());
     }
   }
   // 断开wifi
@@ -65,6 +73,7 @@ void loop()
     bool discon = DisconnectWifi();
     Serial.println(discon ? "disconnect" : "error");
   }
+
 #endif
   delay(5000);
 }

@@ -11,12 +11,14 @@
       // This may need to be "arm-none-eabi-gdb" for some previous builds
       "gdbPath": "arm-none-eabi-gdb",
       "searchDir": [
-        "D:/pico/openocd/tcl"
+        "E:/DAPLink/openocd/tcl"
       ],
       "device": "RP2040",
       "configFiles": [
-        "interface/picoprobe.cfg",
-        "target/rp2040.cfg"
+        // "interface/picoprobe.cfg",
+        // "target/rp2040.cfg"
+        // 使用daplink
+        "board/pico-debug.cfg"
       ],
       "svdFile": "${env:PICO_SDK_PATH}/src/rp2040/hardware_regs/rp2040.svd",
       "runToEntryPoint": "main",
