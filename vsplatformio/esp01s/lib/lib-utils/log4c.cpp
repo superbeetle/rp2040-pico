@@ -1,8 +1,5 @@
 #include "log4c.h"
 
-// 从cmsis-dap打印日志，固定8,9针脚
-#define LOG4C_DEBUG
-
 #if !defined LOG4C_DEBUG
 // 从USB打印日志
 #define LOG4C_FROM Serial
